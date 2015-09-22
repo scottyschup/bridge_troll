@@ -55,7 +55,7 @@ describe Events::UnpublishedEventsController do
 
   describe "POST #publish" do
     def make_request
-      post :publish, unpublished_event_id: @event.id
+      post :publish, params: {unpublished_event_id: @event.id}
     end
 
     before do

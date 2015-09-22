@@ -13,12 +13,12 @@ describe LocationsController do
       end
 
       it "should not be able to edit a location" do
-        get :edit, {id: @location.id}
+        get :edit, params: {id: @location.id}
         expect(response).to redirect_to(new_user_session_path)
       end
 
       it "should not be able to delete a location" do
-        delete :destroy, {id: @location.id}
+        delete :destroy, params: {id: @location.id}
         expect(response).to redirect_to(new_user_session_path)
       end
     end
@@ -53,19 +53,19 @@ describe LocationsController do
           chapter_id: chapter.id
         }
 
-        expect { post :create, location: location_params }.to change(Location, :count).by(1)
+        expect { post :create, params: {location: location_params} }.to change(Location, :count).by(1)
         expect(Location.last.chapter).to eq(chapter)
       end
 
       it "should be able to edit an location" do
-        get :edit, {:id => @location.id}
+        get :edit, params: {id: @location.id}
         expect(response).to be_success
       end
 
       describe "updating a location" do
         let(:new_name) { 'Cowabunga' }
         let(:perform_update_request) do
-          put :update, id: @location.id, location: {name: new_name}
+          put :update, params: {id: @location.id, location: {name: new_name}}
         end
 
         it "is allowed when editable_by? returns true" do
@@ -85,14 +85,14 @@ describe LocationsController do
       describe "#destroy" do
         it "can delete a location that belongs to no events" do
           expect {
-            delete :destroy, {id: @location.id}
+            delete :destroy, params: {id: @location.id}
           }.to change(Location, :count).by(-1)
         end
 
         it "cannot delete a location that belongs to an event" do
           create(:event, location: @location)
           expect {
-            delete :destroy, {id: @location.id}
+            delete :destroy, params: {id: @location.id}
           }.not_to change(Location, :count)
         end
       end

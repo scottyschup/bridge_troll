@@ -22,12 +22,26 @@ Shoulda::Matchers.configure do |config|
 end
 
 RSpec.configure do |config|
+  config.include Rails::Controller::Testing::TestProcess
+  config.include Rails::Controller::Testing::TemplateAssertions
+  config.include Rails::Controller::Testing::Integration
+
   config.infer_spec_type_from_file_location!
 
-  config.use_transactional_fixtures = true
+  config.use_transactional_fixtures = false
 
-  config.before(:each) do
+  config.before(:suite) do
+    DatabaseCleaner.clean_with(:truncation)
+  end
+
+  config.before(:each) do |example|
     WebMock.disable_net_connect!(allow_localhost: true)
+    DatabaseCleaner.strategy = example.metadata[:js] ? :truncation : :transaction
+    DatabaseCleaner.start
+  end
+
+  config.after(:each) do
+    DatabaseCleaner.clean
   end
 
   config.include Devise::TestHelpers, type: :controller

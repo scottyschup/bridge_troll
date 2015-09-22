@@ -49,8 +49,9 @@ Rails.application.configure do
   # Setup default url options for your specific environment.
   config.action_mailer.default_url_options = { :host => 'localhost:3000' }
 
-  config.after_initialize do
-    Bullet.enable = ENV['BULLET_ENABLE']
-    Bullet.bullet_logger = true
-  end
+  # TODO: fix bullet?
+  # config.after_initialize do
+  #   Bullet.enable = ENV['BULLET_ENABLE']
+  #   Bullet.bullet_logger = true
+  # end
 end

@@ -15,7 +15,7 @@ describe ChaptersController do
         end
 
         it "can see the show page" do
-          get :show, id: @chapter.id
+          get :show, params: {id: @chapter.id}
           expect(response).to be_success
         end
       end
@@ -26,12 +26,12 @@ describe ChaptersController do
       end
 
       it "should not be able to edit a chapter" do
-        get :edit, id: @chapter.id
+        get :edit, params: {id: @chapter.id}
         expect(response).to redirect_to(new_user_session_path)
       end
 
       it "should not be able to delete a chapter" do
-        delete :destroy, id: @chapter.id
+        delete :destroy, params: {id: @chapter.id}
         expect(response).to redirect_to(new_user_session_path)
       end
     end
@@ -59,7 +59,7 @@ describe ChaptersController do
         expect(response).to be_success
 
         expect {
-          post :create, chapter: {name: "Fabulous Chapter"}
+          post :create, params: {chapter: {name: "Fabulous Chapter"}}
         }.to change(Chapter, :count).by(1)
         expect(Chapter.last).to have_leader(@user)
       end
@@ -71,11 +71,11 @@ describe ChaptersController do
         end
 
         it "should be able to edit an chapter" do
-          get :edit, id: @chapter.id
+          get :edit, params: {id: @chapter.id}
           expect(response).to be_success
 
           expect {
-            put :update, id: @chapter.id, chapter: {name: 'Sandwich Chapter'}
+            put :update, params: {id: @chapter.id, chapter: {name: 'Sandwich Chapter'}}
           }.to change { @chapter.reload.name }
           expect(response).to redirect_to(chapter_path(@chapter))
         end
@@ -83,12 +83,12 @@ describe ChaptersController do
 
       describe 'who is not a chapter leader' do
         it "should not be able to edit an chapter" do
-          get :edit, id: @chapter.id
+          get :edit, params: {id: @chapter.id}
           expect(response).to be_redirect
           expect(flash[:error]).to be_present
 
           expect {
-            put :update, id: @chapter.id, chapter: {name: 'Sandwich Chapter'}
+            put :update, params: {id: @chapter.id, chapter: {name: 'Sandwich Chapter'}}
           }.not_to change { @chapter.reload.name }
           expect(response).to be_redirect
           expect(flash[:error]).to be_present
@@ -98,14 +98,14 @@ describe ChaptersController do
       describe "#destroy" do
         it "can delete a chapter that belongs to no locations" do
           expect {
-            delete :destroy, {id: @chapter.id}
+            delete :destroy, params: {id: @chapter.id}
           }.to change(Chapter, :count).by(-1)
         end
 
         it "cannot delete a chapter that belongs to a location" do
           create(:location, chapter: @chapter)
           expect {
-            delete :destroy, {id: @chapter.id}
+            delete :destroy, params: {id: @chapter.id}
           }.not_to change(Chapter, :count)
         end
       end
@@ -134,7 +134,7 @@ describe ChaptersController do
         end
 
         it "can see a list of unique organizers" do
-          get :show, id: @chapter.id
+          get :show, params: {id: @chapter.id}
           @organizer_rsvps = assigns(:organizer_rsvps)
           expect(@organizer_rsvps.map do |rsvp|
             [rsvp.user.full_name, rsvp.events_count]

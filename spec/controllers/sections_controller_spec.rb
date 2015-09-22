@@ -11,12 +11,12 @@ describe SectionsController do
   describe "#create" do
     it "makes a new section for the event" do
       expect {
-        post :create, event_id: @event.id
+        post :create, params: {event_id: @event.id}
       }.to change(@event.sections, :count).by(1)
     end
 
     it "initializes the section with a default name" do
-      post :create, event_id: @event.id
+      post :create, params: {event_id: @event.id}
 
       expect(Section.last.name).to eq('New Section')
     end
@@ -28,13 +28,13 @@ describe SectionsController do
     end
 
     it 'changes the section' do
-      put :update, event_id: @event.id, id: @section.id, section: {name: 'Scrabble Sands'}
+      put :update, params: {event_id: @event.id, id: @section.id, section: {name: 'Scrabble Sands'}}
       expect(@section.reload.name).to eq('Scrabble Sands')
       expect(response).to be_success
     end
 
     it 'does not respect invalid params' do
-      put :update, event_id: @event.id, id: @section.id, section: {name: 'Scrabble Sands', event_id: 1}
+      put :update, params: {event_id: @event.id, id: @section.id, section: {name: 'Scrabble Sands', event_id: 1}}
       expect(@section.reload.event_id).to eq(@event.id)
     end
   end
@@ -46,7 +46,7 @@ describe SectionsController do
 
     it 'removes the section' do
       expect {
-        delete :destroy, event_id: @event.id, id: @section.id
+        delete :destroy, params: {event_id: @event.id, id: @section.id}
       }.to change(@event.sections, :count).by(-1)
       expect(Section.find_by_id(@section.id)).to be_nil
     end
@@ -55,7 +55,7 @@ describe SectionsController do
   describe "#arrange" do
     it 'tells the section arranger to arrange sections for this event' do
       expect(SectionArranger).to receive(:arrange).with(@event, 'any')
-      post :arrange, event_id: @event.id, checked_in_to: 'any'
+      post :arrange, params: {event_id: @event.id, checked_in_to: 'any'}
     end
   end
 end

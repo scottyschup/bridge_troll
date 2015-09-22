@@ -14,7 +14,7 @@ describe Events::AttendeesController do
 
   describe '#index' do
     it 'responds to csv' do
-      get :index, event_id: @event.id, format: :csv
+      get :index, params: {event_id: @event.id, format: :csv}
       expect(response).to have_http_status(:success)
       expect(response.content_type).to eq('text/csv')
 
@@ -24,7 +24,7 @@ describe Events::AttendeesController do
     end
 
     it 'includes all dietary info in the dietary info field' do
-      get :index, event_id: @event.id, format: :csv
+      get :index, params: {event_id: @event.id}, format: :csv
       csv_rows = CSV.parse(response.body, headers: true)
       expect(csv_rows[0]['Dietary Info']).to eq('Vegan, paleo')
     end
@@ -33,10 +33,10 @@ describe Events::AttendeesController do
   describe "#update" do
 
     let(:do_request) do
-      put :update, event_id: @event.id, id: @rsvp.id, attendee: {
+      put :update, params: {event_id: @event.id, id: @rsvp.id, attendee: {
         section_id: 401,
         subject_experience: 'Some awesome string'
-      }
+      }}
     end
 
     it 'allows organizers to update an attendee\'s section_id' do
